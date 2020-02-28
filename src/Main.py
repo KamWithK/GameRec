@@ -2,7 +2,7 @@
 # coding: utf-8
 
 from scrapy.crawler import CrawlerProcess
-from Spider import Spider
+from Spiders.Metacritic import Spider
 
 # Scrape Metacritic
 process = CrawlerProcess(settings={
