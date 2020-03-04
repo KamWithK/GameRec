@@ -31,3 +31,7 @@ if not os.path.exists(path_dictionary):
     wiki.dictionary.filter_extremes(no_below=20, no_above=0.1)
     dictionary = wiki.dictionary
     dictionary.save_as_text(path_dictionary, False)
+
+# Get tokens from each page
+# Replace generator with list for accessibility
+pages = list(wiki.get_texts())
