@@ -7,6 +7,7 @@ from scrapy.crawler import CrawlerProcess
 from Spiders.Wikipedia import Spider
 from gensim.corpora import Dictionary
 from WikiSpaCyCorpus import WikiSpacyCorpus
+from gensim.models import LdaMulticore
 
 # Scrape Metacritic
 process = CrawlerProcess(settings={
@@ -33,6 +34,11 @@ if not os.path.exists(path_dictionary):
     dictionary = wiki.dictionary
     dictionary.save(path_dictionary)
 
-# Get tokens from each page
-# Replace generator with list for accessibility
-pages = list(wiki.get_texts())
+bow = [dictionary.doc2bow(game) for game in wiki.get_texts()]
+
+path_lda = "Data/LDA"
+if os.path.exists(path_lda):
+    LdaMulticore.load(path_lda)
+else:
+    lda = LdaMulticore(corpus=bow, id2word=dictionary)
+    lda.save(path_lda)
