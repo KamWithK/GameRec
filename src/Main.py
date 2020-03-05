@@ -5,7 +5,8 @@ import os
 
 from scrapy.crawler import CrawlerProcess
 from Spiders.Wikipedia import Spider
-from gensim.corpora import WikiCorpus, Dictionary
+from gensim.corpora import Dictionary
+from WikiSpaCyCorpus import WikiSpacyCorpus
 
 # Scrape Metacritic
 process = CrawlerProcess(settings={
@@ -24,7 +25,7 @@ path_dictionary = "Data/GamesBOW.txt"
 dictionary = Dictionary.load_from_text(path_dictionary) if os.path.exists(path_dictionary) else None
 
 # Note that the input attribute needs to be manually set
-wiki = WikiCorpus("Data/Games.xml.bz2", lemmatize=False, article_min_tokens=200, dictionary=dictionary)
+wiki = WikiSpacyCorpus("Data/Games.xml.bz2", article_min_tokens=200, dictionary=dictionary)
 setattr(wiki, "input", wiki.fname)
 
 if not os.path.exists(path_dictionary):
