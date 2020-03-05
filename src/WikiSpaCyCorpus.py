@@ -23,5 +23,5 @@ class WikiSpacyCorpus(WikiCorpus):
 
     def get_texts(self):
         is_ignored = lambda title: any(title.startswith(ignore + ':') for ignore in IGNORED_NAMESPACES)
-        pages = [filter_wiki(page[1]) for page in extract_pages(bz2.BZ2File(self.fname)) if not is_ignored(page[0])]
+        pages = [filter_wiki(page[1]) for page in extract_pages(open(self.fname)) if not is_ignored(page[0])]
         return self.lemmatize_and_tokenize(pages)
