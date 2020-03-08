@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-import os, json
+import os, json, pickle
 
 from scrapy.crawler import CrawlerProcess
 from Spiders.Wikipedia import WikipediaSpider
@@ -9,7 +9,7 @@ from Spiders.Metacritic import MetacriticSpider
 from Spiders.MobyGames import MobyGamesSpider
 from gensim.corpora import Dictionary
 from WikiSpaCyCorpus import WikiSpacyCorpus
-from gensim.models import LdaMulticore
+from gensim.models import LdaModel
 
 # Load json file
 with open("Data/Titles.json") as titles:
@@ -44,11 +44,19 @@ if not os.path.exists(path_dictionary):
     dictionary = wiki.dictionary
     dictionary.save(path_dictionary)
 
-bow = [dictionary.doc2bow(game) for game in wiki.get_texts()]
-
-path_lda = "Data/LDA"
-if os.path.exists(path_lda):
-    LdaMulticore.load(path_lda)
+if os.path.exists("Data/BOW"):
+    with open("Data/BOW", "rb") as file:
+        bow = pickle.load(file)
 else:
-    lda = LdaMulticore(corpus=bow, id2word=dictionary)
+    bow = [dictionary.doc2bow(game) for game in wiki.get_texts()]
+
+    with open("Data/BOW", "wb") as file:
+        pickle.dump(bow, file)
+
+path_lda = "Data/LDA/LDA"
+if os.path.exists(path_lda):
+    lda = LdaModel.load(path_lda)
+else:
+    os.makedirs(path_lda[:-4], exist_ok=True)
+    lda = LdaModel(corpus=bow, id2word=dictionary)
     lda.save(path_lda)
