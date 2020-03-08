@@ -1,14 +1,22 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-import os
+import os, json
 
 from scrapy.crawler import CrawlerProcess
 from Spiders.Wikipedia import WikipediaSpider
 from Spiders.Metacritic import MetacriticSpider
+from Spiders.MobyGames import MobyGamesSpider
 from gensim.corpora import Dictionary
 from WikiSpaCyCorpus import WikiSpacyCorpus
 from gensim.models import LdaMulticore
+
+# Load json file
+with open("Data/Titles.json") as titles:
+    data = json.load(titles)
+
+# Iterates through the json file and extracts game titles
+game_titles = [line["game_title"] for line in data]
 
 # Scrape Metacritic
 process = CrawlerProcess(settings={
@@ -18,7 +26,8 @@ process = CrawlerProcess(settings={
     "LOG_LEVEL": "WARNING",
 })
 
-#process.crawl(WikipediaSpider, game_titles)
+os.makedirs("Data/Images", exist_ok=True)
+#process.crawl(MobyGamesSpider, game_titles)
 #process.start()
 
 # If dictionary was already created, load it
