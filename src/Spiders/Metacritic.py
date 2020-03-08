@@ -5,7 +5,7 @@ import scrapy
 
 from scrapy.spiders import CrawlSpider, Rule
 
-class Spider(CrawlSpider):
+class MetacriticSpider(CrawlSpider):
     name = "metacritic"
 
     start_urls = ["https://www.metacritic.com/browse/games/release-date/available/pc/metascore"]

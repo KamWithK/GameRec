@@ -5,7 +5,7 @@ import scrapy
 
 from scrapy.spiders import CrawlSpider, Rule
 
-class Spider(CrawlSpider):
+class WikipediaSpider(CrawlSpider):
     name = "wikipedia"
 
     start_urls = ["https://en.wikipedia.org/wiki/List_of_PC_games"]

@@ -4,7 +4,8 @@
 import os
 
 from scrapy.crawler import CrawlerProcess
-from Spiders.Wikipedia import Spider
+from Spiders.Wikipedia import WikipediaSpider
+from Spiders.Metacritic import MetacriticSpider
 from gensim.corpora import Dictionary
 from WikiSpaCyCorpus import WikiSpacyCorpus
 from gensim.models import LdaMulticore
@@ -17,7 +18,7 @@ process = CrawlerProcess(settings={
     "LOG_LEVEL": "WARNING",
 })
 
-#process.crawl(Spider)
+#process.crawl(WikipediaSpider, game_titles)
 #process.start()
 
 # If dictionary was already created, load it
