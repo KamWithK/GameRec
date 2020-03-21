@@ -46,6 +46,6 @@ class MetacriticSpider(CrawlSpider):
 
         yield {
             "url": response.request.url,
-            "title": response.css(title_css_selector).get().strip(),
+            "game_title": response.css(title_css_selector).get().strip(),
             "summary": summary,
         }
