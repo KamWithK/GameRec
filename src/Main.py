@@ -3,6 +3,7 @@
 
 import os, json, pickle
 
+from Helpers.DataManager import DataManager
 from scrapy.crawler import CrawlerProcess
 from Spiders.Wikipedia import WikipediaSpider
 from Spiders.Metacritic import MetacriticSpider
@@ -11,24 +12,8 @@ from gensim.corpora import Dictionary
 from WikiSpaCyCorpus import WikiSpacyCorpus
 from gensim.models import LdaModel
 
-# Load json file
-with open("Data/Titles.json") as titles:
-    data = json.load(titles)
-
-# Iterates through the json file and extracts game titles
-game_titles = [line["game_title"] for line in data]
-
-# Scrape Metacritic
-process = CrawlerProcess(settings={
-    "FEED_FORMAT": "json",
-    "FEED_URI": "Data/Data.json",
-    "COOKIES_ENABLED": "False",
-    "LOG_LEVEL": "WARNING",
-})
-
-os.makedirs("Data/Images", exist_ok=True)
-#process.crawl(MobyGamesSpider, game_titles)
-#process.start()
+data_manager = DataManager()
+data_manager.crawl(source="Wikipedia")
 
 # If dictionary was already created, load it
 # Otherwise ensure that the variable is kept as None (as expected by Gensim)
