@@ -4,18 +4,14 @@
 import scrapy, os, requests
 
 from scrapy.spiders import CrawlSpider
-from urllib.parse import quote
 from os.path import splitext
 from shutil import copyfileobj
 
 class MobyGamesSpider(CrawlSpider):
     def __init__(self, game_titles):
-        base_url = "https://www.mobygames.com/search/quick?q="
-        
-        # Scrape search pages for games
-        # Stores a dictionary of URLs and titles
-        self.start_urls = [base_url + quote(title) for title in game_titles]
-        self.titles = dict(zip(self.start_urls, game_titles))
+        # Use the dictionary of URL as keys as pages to start scraping
+        self.titles = game_titles
+        self.start_urls = list(self.titles.keys())
 
     # Parse the search URL through each function
     # To allow the game title to be found through its URL

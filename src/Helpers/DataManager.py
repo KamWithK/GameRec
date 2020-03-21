@@ -7,6 +7,7 @@ from scrapy.crawler import CrawlerProcess
 from Spiders.Wikipedia import WikipediaSpider
 from Spiders.Metacritic import MetacriticSpider
 from Spiders.MobyGames import MobyGamesSpider
+from urllib.parse import quote
 
 class DataManager():
     def __init__(self):
@@ -22,13 +23,13 @@ class DataManager():
         if os.path.isfile("Data/Data.json"):
             os.remove("Data/Data.json")
 
-    def get_game_titles(self):
+    def get_game_data(self):
         # Load json file
         with open("Data/Data.json") as titles:
             data = json.load(titles)
 
-        # Iterates through the json file and extracts game titles
-        return [line["game_title"] for line in data]
+        # Create search a URL to game title dictionary
+        return {"https://www.mobygames.com/search/quick?q=" + quote(line["game_title"]): line["game_title"] for line in data}
 
     def crawl(self, source="Wikipedia"):
         @defer.inlineCallbacks
@@ -39,7 +40,7 @@ class DataManager():
                 yield self.process.crawl(MetacriticSpider)
             else:
                 pass
-            yield self.process.crawl(MobyGamesSpider, self.get_game_titles())
+            yield self.process.crawl(MobyGamesSpider, self.get_game_data())
             
         crawl()
         self.process.start()
