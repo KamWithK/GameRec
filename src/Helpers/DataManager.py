@@ -2,6 +2,7 @@
 # coding: utf-8
 import os, json
 
+from glob import glob
 from twisted.internet import defer
 from scrapy.crawler import CrawlerProcess
 from Spiders.Wikipedia import WikipediaSpider
@@ -10,7 +11,8 @@ from Spiders.MobyGames import MobyGamesSpider
 from urllib.parse import quote
 
 class DataManager():
-    def __init__(self):
+    def __init__(self, redownload=False):
+        self.redownload = redownload
         self.process = CrawlerProcess(settings={
             "FEED_FORMAT": "json",
             "FEED_URI": "Data/Data.json",
@@ -20,8 +22,9 @@ class DataManager():
 
         # Avoid errors due to non-existant folders and pre-existant data files
         os.makedirs("Data/Images", exist_ok=True)
-        if os.path.isfile("Data/Data.json"):
-            os.remove("Data/Data.json")
+        if redownload == True or not os.path.isfile("Data/Data.json"):
+            if os.path.isfile("Data/Data.json"):
+                os.remove("Data/Data.json")
 
     def get_game_data(self):
         # Load json file
@@ -34,13 +37,19 @@ class DataManager():
     def crawl(self, source="Wikipedia"):
         @defer.inlineCallbacks
         def crawl():
-            if source == "Wikipedia":
-                yield self.process.crawl(WikipediaSpider)
-            elif source == "Metacritic":
-                yield self.process.crawl(MetacriticSpider)
-            else:
-                pass
-            yield self.process.crawl(MobyGamesSpider, self.get_game_data())
+            # Assume images folder hasn't been manually deleted mid run
+            game_list_present, images = os.path.isfile("Data/Data.json"), os.listdir("Data/Images/")
+
+            if self.redownload or game_list_present == False:
+                if source == "Wikipedia":
+                    yield self.process.crawl(WikipediaSpider)
+                elif source == "Metacritic":
+                    yield self.process.crawl(MetacriticSpider)
+
+            # Only scrape images for empty images directory or explicit command
+            if self.redownload or not images:
+                missing_images = {url: title for url, title in self.get_game_data().items() if not glob("Data/Images/" + title + ".*")}
+                yield self.process.crawl(MobyGamesSpider, missing_images)
             
         crawl()
         self.process.start()
