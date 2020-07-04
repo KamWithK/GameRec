@@ -1,0 +1,35 @@
+body {
+    background-color: #000000;
+}
+
+.text {
+    color: white;
+}
+
+img {
+    max-height: 300px;
+}
+
+.grid {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.overlay {
+    background-color: #ff6347;
+    overflow: hidden;
+    position: absolute;
+    height: 0;
+    width: 0;
+    transition: .3 ease;
+}
+
+.container:hover .overlay {
+    height: inherit;
+    width: inherit;
+}
+
+.test {
+    color: white;
+    text-align: center;
+}

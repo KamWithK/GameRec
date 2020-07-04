@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!-- Custom CSS stylesheet -->
+        <link rel= "stylesheet" type= "text/css" href= "Data/style.css">
+        
+        <body>
+            <title>GameRec: Video Game Recommendations</title>
+
+            <h1 class="text">GameRec: Video Game Recommendations</h1>
+            <h2 class="text">Please select a game:</h2>
+
+            <div class=grid>
+                {%for game_path in game_paths%}
+                    <div class="container">
+                        <img src={{game_path}} class="image">
+                        <div class="overlay"><div class="test">{{game_path}}</div></div>
+                    </div>
+                {%endfor%}
+            </div>
+
+        </body>
+    </head>
+</html>

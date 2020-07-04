@@ -11,6 +11,18 @@ from Spiders.MobyGames import MobyGamesSpider
 from gensim.corpora import Dictionary
 from WikiSpaCyCorpus import WikiSpacyCorpus
 from gensim.models import LdaModel
+from flask import Flask, redirect, url_for, render_template
+from urllib.parse import quote
+
+app = Flask(__name__, template_folder="../Templates", static_folder="../Data/")
+
+@app.route("/")
+def home():
+    safe_paths = ["Data/Images/" + quote(path) for path in os.listdir("Data/Images")]
+    return render_template("index.html", game_paths=safe_paths)
+
+if __name__ == "__main__":
+    app.run()
 
 data_manager = DataManager()
 data_manager.crawl(source="Wikipedia")
